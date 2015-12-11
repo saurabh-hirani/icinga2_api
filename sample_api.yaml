@@ -1,0 +1,8 @@
+stage:
+  host: icinga2_host
+  port: icinga2_api_port
+  user: icinga2_api_user
+  password: icinga2_api_password
+  timeout: 5
+  verbose: true
+  verify: false
