@@ -7,14 +7,13 @@ import json
 import requests
 requests.packages.urllib3.disable_warnings()
 
-DEFAULT_CONFIGFILE = os.path.join(os.environ['HOME'], '.icinga2', 'api.yaml') 
-DEFAULT_PROFILE = 'default'
+from icinga2_api import defaults
 
 class ApiException(Exception): pass
 
 class Api(object):
-  def __init__(self, configfile=DEFAULT_CONFIGFILE, 
-               profile=DEFAULT_PROFILE, **kwargs):
+  def __init__(self, configfile=defaults.CONFIGFILE, 
+               profile=defaults.PROFILE, **kwargs):
     # set the attributes passed by the user
     self.configfile = configfile
     self.profile = profile
@@ -76,7 +75,7 @@ class Api(object):
 
     if self.verbose:
       print 'url: %s' % url
-      print 'args: %s' % kwargs
+      print 'attrs: %s' % kwargs
 
     # make the request
     method_ref = getattr(requests, method)
@@ -84,7 +83,7 @@ class Api(object):
 
     if r.status_code == 200:
       # convert unicode to str 
-      return yaml.safe_load(json.loads(r.json()))
+      return yaml.safe_load(json.dumps(r.json()))
     
     raise ApiException('Apierror status:%d error:%s' % (r.status_code, r.text))
 
@@ -94,7 +93,7 @@ class Api(object):
     }
     return self._make_request(uri, headers, data, 'put')
 
-  def read(self, uri, data=None):
+  def read(self, uri=defaults.READ_ACTION_URI, data=defaults.READ_ACTION_DATA):
     headers = {
       'Accept': 'application/json',
       'X-HTTP-Method-Override': 'GET'
