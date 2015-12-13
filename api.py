@@ -113,7 +113,7 @@ class Api(object):
     }
     return self._make_request(uri, headers, data)
 
-  def delete(self, uri, data):
+  def delete(self, uri, data=None):
     headers = {
       'Accept': 'application/json',
       'X-HTTP-Method-Override': 'DELETE'

@@ -55,15 +55,15 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     obj.read()
     ```
 
-* Create a dummy hostgroup:
+* Create a host:
 
   - Without icinga2_api, through the command line
 
     ```bash
-    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
+    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD  \
          -H 'Accept: application/json' -X PUT \
-         -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hostgroups/api_dummy_hostgroup" \
-         -d '{ "attrs": { "display_name": "api_dummy_hostgroup" } }' | python -m json.tool
+         -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hosts/api_dummy_host_1" \
+         -d '{ "templates": [ "generic-host" ], "attrs": { "address": "8.8.8.8", "vars.os" : "Linux", "groups": ["api_dummy_hostgroup"] } }' | python -m json.tool
     ```
 
   - With the icinga2_api command line utility
@@ -71,8 +71,8 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     ```bash
     icinga2_api -p docker \
                 -a create \
-                -u '/v1/objects/hostgroups/api_dummy_hostgroup' \
-                -d '{ "attrs": { "display_name": "api_dummy_hostgroup" } }' 
+                -u '/v1/objects/hosts/api_dummy_host_1' \
+                -d '{ "templates": [ "generic-host" ], "attrs": { "address": "8.8.8.8", "vars.os" : "Linux" } }'
     ```
 
   - With the icinga2_api library
@@ -80,7 +80,99 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     ```python
     from icinga2_api import api
     obj = api.Api(profile='docker')
-    uri = '/v1/objects/hostgroups/api_dummy_hostgroup'
-    data = { "attrs": { "display_name": "api_dummy_hostgroup" } }
+    uri = '/v1/objects/hosts/api_dummy_host_1'
+    data = { "templates": [ "generic-host" ], "attrs": { "address": "8.8.8.8", "vars.os" : "Linux" } }
     obj.create(uri, data)
+    ```
+
+* Read host name, address attributes for this host
+
+  - Without icinga2_api, through the command line
+
+    ```bash
+    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
+         -H 'Accept: application/json' -H 'X-HTTP-Method-Override: GET' \
+         -X POST \
+         -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hosts/api_dummy_host_1" \
+         -d '{ "attrs": ["name", "address"] }' | python -m json.tool
+    ```
+
+  - With the icinga2_api command line utility
+
+    ```bash
+    icinga2_api -p docker \
+                -a read \
+                -u '/v1/objects/hosts/api_dummy_host_1' \
+                -d '{ "attrs": ["name", "address"] }'
+    ```
+
+  - With the icinga2_api library
+
+    ```python
+    from icinga2_api import api
+    obj = api.Api(profile='docker')
+    uri = '/v1/objects/hosts/api_dummy_host_1'
+    data = { "attrs": ["name", "address"] }
+    obj.read(uri, data)
+    ```
+
+* Update attributes for this host - add a custom var
+
+  - Without icinga2_api, through the command line
+
+    ```bash
+    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
+         -H 'Accept: application/json' -H 'X-HTTP-Method-Override: GET' \
+         -X POST \
+         -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hosts/api_dummy_host_1" \
+         -d '{ "attrs": { "address": "8.8.8.8", "vars.os": "Linux", "vars.environment" : "stage" } }'
+    ```
+
+  - With the icinga2_api command line utility
+
+    ```bash
+    icinga2_api -p docker \
+                -a update \
+                -u '/v1/objects/hosts/api_dummy_host_1' \
+                -d '{ "attrs": { "address": "8.8.8.8", "vars.os": "Linux", "vars.environment" : "stage" } }'
+    ```
+
+  - With the icinga2_api library
+
+    ```python
+    from icinga2_api import api
+    obj = api.Api(profile='docker')
+    uri = '/v1/objects/hosts/api_dummy_host_1'
+    data = { "attrs": { "address": "8.8.8.8", "vars.os": "Linux", "vars.environment" : "stage" } }
+    obj.update(uri, data)
+    ```
+
+* Delete this host
+
+  - Without icinga2_api, through the command line
+
+    ```bash
+    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD  \
+         -H 'Accept: application/json' -H 'X-HTTP-Method-Override: DELETE' -X POST \
+         -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hosts/api_dummy_host_1" \
+         -d '{ "cascade": 1 }'
+    ```
+
+  - With the icinga2_api command line utility
+
+    ```bash
+    icinga2_api -p docker \
+                -a delete \
+                -u '/v1/objects/hosts/api_dummy_host_1' \
+                -d '{ "cascade": 1 }'
+    ```
+
+  - With the icinga2_api library
+
+    ```python
+    from icinga2_api import api
+    obj = api.Api(profile='docker')
+    uri = '/v1/objects/hosts/api_dummy_host_1'
+    data = {'cascade': 1}
+    obj.delete(uri, data)
     ```
