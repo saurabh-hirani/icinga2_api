@@ -61,8 +61,7 @@ def validate_data(ctx, param, value):
               default=None)
 def icinga2_api(**kwargs):
   """
-  create|read|update|delete on a uri
-  http://docs.icinga.org/icinga2/snapshot/doc/module/icinga2/chapter/icinga2-api
+  https://github.com/saurabh-hirani/icinga2_api/blob/master/README.md
   """
   if kwargs['verbose']:
     print 'args: %s' % kwargs

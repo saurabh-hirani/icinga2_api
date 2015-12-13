@@ -13,7 +13,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
 
 * The python library and the command line utility's aim is to abstract out repetitive data like host, port, credentials, headers, etc. 
 * Strip out that layer and you have a 1:1 mapping to how the icinga2 API is written. 
-* See Examples mapping from command line curl calls => the command line utlity => the python library.
+* See **Examples** mapping from command line curl calls => the command line utlity => the python library.
 
 ### Examples
 
@@ -22,14 +22,14 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
   - Without icinga2_api, through the command line
 
     ```bash
-    $ curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
-            -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/status" | python -m json.tool
+    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
+         -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/status" | python -m json.tool
     ```
 
   - With the icinga2_api command line utility
 
     ```bash
-    $ python icinga2_api -p docker
+    icinga2_api -p docker
     ```
 
     No connection parameters are required as the user can specify connection parameters for a profile in a profile file. 
@@ -42,7 +42,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     Check ```sample_api.yml``` in this repo to view a sample configuration.
 
     ```bash
-    $ python icinga2_api --help
+    icinga2_api --help
     ```
 
     to view all options
@@ -60,7 +60,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
   - Without icinga2_api, through the command line
 
     ```bash
-    $ curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
+    curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD \
          -H 'Accept: application/json' -X PUT \
          -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hostgroups/api_dummy_hostgroup" \
          -d '{ "attrs": { "display_name": "api_dummy_hostgroup" } }' | python -m json.tool
@@ -69,10 +69,10 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
   - With the icinga2_api command line utility
 
     ```bash
-    $ python icinga2_api -p docker \
-                         -a create \
-                         -u '/v1/objects/hostgroups/api_dummy_hostgroup' \
-                         -d '{ "attrs": { "display_name": "api_dummy_hostgroup" } }' 
+    icinga2_api -p docker \
+                -a create \
+                -u '/v1/objects/hostgroups/api_dummy_hostgroup' \
+                -d '{ "attrs": { "display_name": "api_dummy_hostgroup" } }' 
     ```
 
   - With the icinga2_api library
