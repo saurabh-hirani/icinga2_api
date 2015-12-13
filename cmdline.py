@@ -20,6 +20,8 @@ def validate_action(ctx, param, value):
   return value
 
 def validate_data(ctx, param, value):
+  if value is None:
+    return value
   try:
     return json.loads(value)
   except ValueError as e:
@@ -32,18 +34,31 @@ def validate_data(ctx, param, value):
 @click.option('-p', '--profile',
               help='icinga2 profile to load. Default: %s' % defaults.PROFILE,
               default=defaults.PROFILE)
-@click.option('-v', '--verbose/--no-verbose', 
-              help='verbose. Default: false',
-              default=False)
 @click.option('-a', '--action', help='|'.join(VALID_ACTIONS) + ' Default: read', 
               callback=validate_action,
               default='read')
+@click.option('-H', '--host', help='icinga2 api host - not required if profile specified',
+              default=None)
+@click.option('--port', help='icinga2 api port - not required if profile specified',
+              default=None)
 @click.option('-u', '--uri', help='icinga2 api uri. Default: ' + defaults.READ_ACTION_URI,  
               callback=validate_uri,
               default=defaults.READ_ACTION_URI)
+@click.option('-U', '--user', help='icinga2 api user - not required if profile specified',
+              default=None)
+@click.option('--password', help='icinga2 api password - not required if profile specified',
+              default=None)
+@click.option('-t', '--timeout', help='icinga2 api timeout - not required if profile specified',
+              default=None)
+@click.option('-V', '--verify', help='verify certificate. Default: false',
+              default=False)
+@click.option('-C', '--cert-path', help='verify certificate path - not required if profile specified',
+              default=None)
+@click.option('-v', '--verbose/--no-verbose', help='verbose. Default: false',
+              default=False)
 @click.option('-d', '--data', help='json data to pass', 
               callback=validate_data,
-              default=defaults.READ_ACTION_DATA)
+              default=None)
 def icinga2_api(**kwargs):
   """
   create|read|update|delete on a uri
@@ -51,8 +66,7 @@ def icinga2_api(**kwargs):
   """
   if kwargs['verbose']:
     print 'args: %s' % kwargs
-  obj = Api(configfile=kwargs['configfile'], profile=kwargs['profile'], 
-            verbose=kwargs['verbose'])
+  obj = Api(**kwargs)
   kwargs['uri'] = re.sub("/{2,}", "/", kwargs['uri'])
   method_ref = getattr(obj, kwargs['action'])
   output_ds = method_ref(kwargs['uri'], kwargs['data'])

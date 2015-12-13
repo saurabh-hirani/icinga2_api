@@ -7,7 +7,7 @@ import json
 import requests
 requests.packages.urllib3.disable_warnings()
 
-from icinga2_api import defaults
+from icinga2_api import defaults 
 
 class ApiException(Exception): pass
 
@@ -18,16 +18,17 @@ class Api(object):
     self.configfile = configfile
     self.profile = profile
 
-    # env vars corresponding to each attr
-    attrs_env_vars = {
-      'host': 'ICINGA2_API_HOST',
-      'port': 'ICINGA2_API_PORT',
-      'user': 'ICINGA2_API_USER',
-      'password': 'ICINGA2_API_PASSWORD',
-      'timeout': 'ICINGA2_API_TIMEOUT',
-      'verify': 'ICINGA2_API_VERIFY',
-      'cert_path': 'ICINGA2_API_CERT_PATH',
-      'verbose': 'ICINGA2_API_VERBOSE'
+    mandatory_attrs = [
+      'host',
+      'port',
+      'user',
+      'password'
+    ]
+    optional_attrs = {
+      'timeout': defaults.TIMEOUT,
+      'verify': defaults.VERIFY,
+      'cert_path': defaults.CERT_PATH,
+      'verbose': defaults.VERBOSE
     }
 
     # load the defaults from the configfile
@@ -41,19 +42,24 @@ class Api(object):
                          (profile, configfile))
     cfg_defaults = configfile_ds[profile]
 
-    # overrides the configfile defaults by the environment
-    defaults = cfg_defaults
-    for attr, attr_env_var in attrs_env_vars.iteritems():
-      if attr not in defaults:
-        defaults[attr] = None
-      if attr_env_var in os.environ:
-        defaults[attr] = os.environ[attr_env_var]
+    # update cfg_defaults with optional values
+    for attr in optional_attrs.keys():
+      if attr not in cfg_defaults:
+        cfg_defaults[attr] = optional_attrs[attr]
 
     # initialize attributes to default values
-    self.__dict__.update(defaults)
+    self.__dict__.update(cfg_defaults)
+
+    # remove the None values from kwargs before updating
+    kwargs = {k: kwargs[k] for k in kwargs if kwargs[k] is not None}
 
     # overrides the environment defaults by user passed values
     self.__dict__.update(kwargs)
+
+    # find out the mandatory attrs not specified
+    empty_attrs = [m for m in mandatory_attrs if m not in self.__dict__ or self.__dict__[m] is None]
+    if empty_attrs:
+      raise ApiException('ERROR: No values provided for %s' % empty_attrs)
 
   def _make_request(self, uri, headers, data, method='post'):
     # validate input
@@ -93,7 +99,7 @@ class Api(object):
     }
     return self._make_request(uri, headers, data, 'put')
 
-  def read(self, uri=defaults.READ_ACTION_URI, data=defaults.READ_ACTION_DATA):
+  def read(self, uri=defaults.READ_ACTION_URI, data=None):
     headers = {
       'Accept': 'application/json',
       'X-HTTP-Method-Override': 'GET'
