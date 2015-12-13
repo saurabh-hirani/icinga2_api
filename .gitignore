@@ -1,1 +1,5 @@
 *.pyc
+*.txt
+dist/
+build/
+icinga2_api.egg-info/

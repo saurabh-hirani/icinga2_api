@@ -33,7 +33,8 @@ class Api(object):
 
     # load the defaults from the configfile
     if not os.path.exists(configfile):
-      raise ApiException('ERROR: Invalid configfile %s' % configfile)
+      err = 'configfile %s does not exist. See '
+      raise ApiException('ERROR: configfile does not exist %s' % configfile)
 
     configfile_ds = yaml.load(open(configfile).read())
 
