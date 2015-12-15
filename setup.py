@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 setup(
   name='icinga2_api',
   license='MIT',
-  version='0.3',
+  version='0.0.2',
   url='https://github.com/saurabh-hirani/icinga2_api',
   description=('Python library and command-line support for the icinga2 API'),
   author='Saurabh Hirani',
@@ -11,8 +11,8 @@ setup(
   install_requires=[
     'click',
     'requests',
-    'yaml',
-    'json'
+    'pyyaml',
+    'simplejson'
   ],
   entry_points = {
     'console_scripts': [
