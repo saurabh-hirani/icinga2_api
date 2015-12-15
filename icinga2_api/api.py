@@ -88,11 +88,27 @@ class Api(object):
     method_ref = getattr(requests, method)
     r = method_ref(url, **kwargs)
 
+    output = {
+      'status': 'success',
+      'request': {
+        'url': url,
+        'headers': headers,
+        'data': data
+      },
+      'response': {
+        'status_code': r.status_code,
+        'data': None,
+      }
+    }
+
     if r.status_code == 200:
       # convert unicode to str 
-      return yaml.safe_load(json.dumps(r.json()))
-    
-    raise ApiException('Apierror status:%d error:%s' % (r.status_code, r.text))
+      output['response']['data'] = yaml.safe_load(json.dumps(r.json()))
+      return output
+
+    output['status'] = 'failure'
+    output['response']['data'] = r.text
+    return output
 
   def create(self, uri, data):
     headers = {

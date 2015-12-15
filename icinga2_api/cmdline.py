@@ -59,7 +59,8 @@ def validate_data(ctx, param, value):
 @click.option('-d', '--data', help='json data to pass', 
               callback=validate_data,
               default=None)
-def icinga2_api(**kwargs):
+@click.pass_context
+def icinga2_api(ctx, **kwargs):
   """
   https://github.com/saurabh-hirani/icinga2_api/blob/master/README.md
   """
@@ -69,7 +70,16 @@ def icinga2_api(**kwargs):
   kwargs['uri'] = re.sub("/{2,}", "/", kwargs['uri'])
   method_ref = getattr(obj, kwargs['action'])
   output_ds = method_ref(kwargs['uri'], kwargs['data'])
+
+  exit_code = 0
+  if output_ds['status'] != 'success':
+    click.echo(click.style('CRITICAL: %s action failed' % kwargs['action'], fg='red'))
+    exit_code = 2
+  else:
+    click.echo(click.style('OK: %s action succeeded' % kwargs['action'], fg='green'))
+
   click.echo(json.dumps(output_ds, indent=2))
+  ctx.exit(exit_code)
 
 if __name__ == '__main__':
   icinga2_api()
