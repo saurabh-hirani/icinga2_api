@@ -14,6 +14,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
 * The python library and the command line utility's aim is to abstract out repetitive data like host, port, credentials, headers, etc. 
 * Strip out that layer and you have a 1:1 mapping to how the icinga2 API is written. 
 * See **Examples** mapping from command line curl calls => the command line utlity => the python library.
+* To see more curl calls check out [icinga2 api examples](https://github.com/saurabh-hirani/icinga2-api-examples)
 
 ### Examples
 
