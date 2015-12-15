@@ -6,6 +6,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
 
 * stable release: ``` pip install icinga2_api``` 
 * ongoing development package:
+
   ```bash
   git clone https://github.com/saurabh-hirani/icinga2_api
   cd icinga2_api
