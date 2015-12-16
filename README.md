@@ -365,6 +365,42 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     obj.delete(uri, data)
     ```
 
+* Disable notifications for all hosts in hostgroup:
+
+  - Without icinga2_api, through the command line
+
+  ```bash
+  curl -u $ICINGA2_API_USER:$ICINGA2_API_PASSWORD  \
+       -H 'Accept: application/json' \
+       -X POST \
+       -k "https://$ICINGA2_HOST:$ICINGA2_API_PORT/v1/objects/hosts/" \
+       -d '{ "filter": "match(\"*,api_dummy_hostgroup,*\",host.groups)",  \
+             "attrs": { "enable_notifications": false } }' | python -m json.tool
+  ```
+
+  - With the icinga2_api command line utility
+
+    ```bash
+    icinga2_api -p docker \
+                -a update \
+                -u '/v1/objects/hosts/' \
+                -d '{ "filter": "match(\"*,api_dummy_hostgroup,*\",host.groups)", \
+                      "attrs": { "enable_notifications": false } }' | python -m json.tool
+    ```
+
+  - With the icinga2_api library:
+
+    ```python
+    from icinga2_api import api
+    obj = api.Api(profile='docker')
+    uri = '/v1/objects/hosts/'
+    data = { 'filter': 'match("*,api_dummy_hostgroup,*",host.groups)', 
+             'attrs': {'enable_notifications': false } }
+    obj.update(uri, data)
+    ```
+
+  This functionality can be abstracted out in a ```manage_hostgroup_hosts_notifications``` function
+
 ### Error handling examples
 
 * Deleting a non-existent host
@@ -400,3 +436,4 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     ```
 
     The status code is non-200 and the data non-json.
+
