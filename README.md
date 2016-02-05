@@ -437,3 +437,4 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
 
     The status code is non-200 and the data non-json.
 
+* More examples in examples/
