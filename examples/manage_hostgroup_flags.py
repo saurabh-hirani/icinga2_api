@@ -37,7 +37,7 @@ def main(args):
     raise HostgroupChecksException({'message': 'Invalid number of args'})
 
   icinga2_host_profile = args[0]
-  obj = api.Api(profile='prod')
+  obj = api.Api(profile=icinga2_host_profile)
 
   action_state = args[1]
   action, state = action_state.split(':')
