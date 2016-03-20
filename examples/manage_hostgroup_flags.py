@@ -41,6 +41,7 @@ def main(args):
 
   action_state = args[1]
   action, state = action_state.split(':')
+
   if state == 'true':
     state = True
   else:
@@ -53,18 +54,28 @@ def main(args):
 
   # find the hostgroups
   hostgroup_pattern = args[3]
+
+  uri = '/v1/objects/%s' % target
+  status = {}
+  if action not in status:
+    status[action] = {'success': [], 'failure': []}
+
+  if hostgroup_pattern == '.+':
+    data = {"attrs": {action: state}}
+    output = obj.update(uri, data)
+    if output['status'] != 'success':
+      status[action]['failure'].append(output)
+    else:
+      status[action]['success'].append(output)
+    return status
+
   target_hostgroups_ds = find_hostgroups.main([icinga2_host_profile,
                                                'hostgroups', hostgroup_pattern])
   hostgroup_names = [x['name'] for x in target_hostgroups_ds]
 
   # do the deed
-  uri = '/v1/objects/%s' % target
-  status = {}
 
   for hostgroup_name in hostgroup_names:
-    if action not in status:
-      status[action] = {'success': [], 'failure': []}
-
     print "STATUS: %s: %s" % (hostgroup_name, action)
     data = {"attrs": {action: state},
             "filter": "\"%s\" in host.groups" % hostgroup_name}
