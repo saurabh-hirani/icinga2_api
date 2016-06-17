@@ -106,7 +106,7 @@ class Api(object):
       data = yaml.safe_load(json.dumps(r.json()))
       output['response']['data'] = data
       for result in data['results']:
-        if result['code'] != 200:
+        if 'code' in result and result['code'] != 200:
           output['status'] = 'failure'
       return output
 
