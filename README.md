@@ -25,8 +25,8 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
 ### Pre-requisites
 
 * A working icinga2 API setup through:
-  - [icinga2 docker image](https://github.com/icinga/docker-icinga2)
-  - [icinga2 vagrant boxes](https://github.com/Icinga/icinga-vagrant)
+  - [icinga2 docker image](https://github.com/icinga/docker-icinga2) OR
+  - [icinga2 vagrant boxes](https://github.com/Icinga/icinga-vagrant) OR
   - your own setup
 
 ### Examples
