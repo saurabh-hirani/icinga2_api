@@ -103,7 +103,11 @@ class Api(object):
 
     if r.status_code == 200:
       # convert unicode to str 
-      output['response']['data'] = yaml.safe_load(json.dumps(r.json()))
+      data = yaml.safe_load(json.dumps(r.json()))
+      output['response']['data'] = data
+      for result in data['results']:
+        if result['code'] != 200:
+          output['status'] = 'failure'
       return output
 
     output['status'] = 'failure'
