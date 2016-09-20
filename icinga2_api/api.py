@@ -32,16 +32,14 @@ class Api(object):
     }
 
     # load the defaults from the configfile
-    if not os.path.exists(configfile):
-      err = 'configfile %s does not exist. See '
-      raise ApiException('ERROR: configfile does not exist %s' % configfile)
+    cfg_defaults = {}
+    if os.path.exists(configfile):
+      configfile_ds = yaml.load(open(configfile).read())
 
-    configfile_ds = yaml.load(open(configfile).read())
-
-    if profile not in configfile_ds:
-      raise ApiException('ERROR: Invalid profile [%s] not present in %s' % 
-                         (profile, configfile))
-    cfg_defaults = configfile_ds[profile]
+      if profile not in configfile_ds:
+        raise ApiException('ERROR: Invalid profile [%s] not present in %s' % 
+                           (profile, configfile))
+      cfg_defaults = configfile_ds[profile]
 
     # update cfg_defaults with optional values
     for attr in optional_attrs.keys():
