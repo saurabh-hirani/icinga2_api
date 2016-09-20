@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.6
+### v0.0.6
 
 - Making config file optional. If the user specifies mandatory attrs i.e.
 
