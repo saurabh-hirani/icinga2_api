@@ -13,7 +13,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
 
 ### Installation
 
-* stable release: ```pip install icinga2_api``` 
+* stable release: ```pip install icinga2_api```
 * ongoing development package:
 
   ```bash
@@ -21,6 +21,21 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
   cd icinga2_api
   sudo ./install.sh
   ```
+
+### Configuration setup
+
+- Configure the API parameters in ```~/.icinga2/api.yml``` (Default profile: default)
+- Check ```sample_api.yml``` in this repo to view a sample configuration.
+- The command line utility ```icinga2_api``` uses the config file to load the host connection params. If you don't want to use it, use the command line params
+
+  ```
+  icinga2_api -H $host -a create|read|update|delete --user $user --password $password --port 5665 -u '/v1/objects/hosts' -d '{ payload }'
+  ```
+
+  More command line examples below.
+
+- Use ```icinga2_api --help``` to view all the options
+
 
 ### Pre-requisites
 
@@ -74,21 +89,6 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
                       .
 
     ```
-
-    No connection parameters are required as the user can specify connection parameters for a profile in a profile file. 
-
-    ```bash
-    Default location: ~/.icinga2/api.yml 
-    Default profile: default
-    ```
-    
-    Check ```sample_api.yml``` in this repo to view a sample configuration.
-
-    ```bash
-    icinga2_api --help
-    ```
-
-    to view all options
 
   - With the icinga2_api library
 
@@ -394,7 +394,7 @@ Python library and command line utility to support [icinga2 api](http://docs.ici
     from icinga2_api import api
     obj = api.Api(profile='docker')
     uri = '/v1/objects/hosts/'
-    data = { 'filter': 'match("*,api_dummy_hostgroup,*",host.groups)', 
+    data = { 'filter': 'match("*,api_dummy_hostgroup,*",host.groups)',
              'attrs': {'enable_notifications': false } }
     obj.update(uri, data)
     ```
