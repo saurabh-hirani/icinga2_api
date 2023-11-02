@@ -79,8 +79,8 @@ class Api(object):
       kwargs['verify'] = self.verify
 
     if self.verbose:
-      print 'url: %s' % url
-      print 'attrs: %s' % kwargs
+      print ('url: %s') % url
+      print ('attrs: %s') % kwargs
 
     # make the request
     method_ref = getattr(requests, method)

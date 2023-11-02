@@ -65,7 +65,7 @@ def icinga2_api(ctx, **kwargs):
   https://github.com/saurabh-hirani/icinga2_api/blob/master/README.md
   """
   if kwargs['verbose']:
-    print 'args: %s' % kwargs
+    print ('args: %s') % kwargs
   obj = Api(**kwargs)
   kwargs['uri'] = re.sub("/{2,}", "/", kwargs['uri'])
   method_ref = getattr(obj, kwargs['action'])
